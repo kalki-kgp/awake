@@ -1,0 +1,40 @@
+# Byte-level GRU language model learning online from a text stream, one 64-byte chunk at a time,
+# hidden state carried across chunks (truncated BPTT), WITH a sleep phase that replays
+# a small reservoir of past chunks (consolidation) and keeps an EMA of slow weights. Metric: bits per byte, prequential.
+# Retention: the first 64 KB of the stream, re-scored at every sleep.
+# Needs a text file once: `awake data shakespeare`, or point `path` at any file or folder of text.
+
+[run]
+device = "gpu"          # measured on M1: hidden-256 GRU is ~2x faster on Metal than CPU
+batch_size = 1
+log_every = 200
+max_steps = 0
+max_steps_per_sec = 0
+seed = 0
+
+[stream]
+kind = "text"
+path = "~/.cache/awake/text/tinyshakespeare.txt"
+seq_len = 64
+retention_bytes = 65536
+on_end = "loop"         # "stop" ends the run when the stream is exhausted
+
+[learner]
+kind = "chargru"
+embed = 64
+hidden = 256
+
+[optim]
+kind = "adam"
+lr = 0.002
+
+[plasticity]
+kind = "none"
+
+[sleep]
+wake_steps = 5000       # ~320 KB of text per wake
+replay = true
+memory_size = 512       # reservoir-sampled chunks kept for sleep replay
+replay_steps = 200      # updates on remembered chunks during each sleep
+slow_ema = 0.1          # slow weights <- (1-tau)*slow + tau*fast at every sleep
+consolidate = 0.0       # fast <- (1-c)*fast + c*slow at every sleep (0 = only track, never pull)

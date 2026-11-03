@@ -1,0 +1,16 @@
+[project]
+name = "awake"
+version = "0.1.0"
+description = "An always-on learner for Apple Silicon: online, batch-size-1, never reset."
+requires-python = ">=3.11"
+dependencies = ["mlx>=0.30", "numpy>=1.26"]
+
+[project.scripts]
+awake = "awake.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["awake"]

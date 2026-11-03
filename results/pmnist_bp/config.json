@@ -1,0 +1,51 @@
+{
+  "run": {
+    "name": null,
+    "device": "cpu",
+    "seed": 0,
+    "batch_size": 16,
+    "max_steps": 0,
+    "max_steps_per_sec": 0,
+    "log_every": 500,
+    "ckpt_every": 0,
+    "compile": true
+  },
+  "stream": {
+    "kind": "pmnist",
+    "samples_per_task": 10000,
+    "retention_samples": 2000
+  },
+  "learner": {
+    "kind": "mlp",
+    "hidden": [
+      256,
+      256
+    ],
+    "act": "relu"
+  },
+  "optim": {
+    "kind": "sgd",
+    "lr": 0.01,
+    "momentum": 0.0,
+    "weight_decay": 0.0
+  },
+  "plasticity": {
+    "kind": "none",
+    "decay": 0.99,
+    "replacement_rate": 0.0001,
+    "maturity": 100,
+    "adaptation": false,
+    "l2_lambda": 0.001,
+    "shrink": 0.999,
+    "perturb": 0.0001,
+    "every": 1000
+  },
+  "sleep": {
+    "wake_steps": 20000,
+    "replay": false,
+    "memory_size": 1024,
+    "replay_steps": 100,
+    "slow_ema": 0.0,
+    "consolidate": 0.0
+  }
+}

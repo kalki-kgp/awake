@@ -1,0 +1,51 @@
+{
+  "run": {
+    "name": null,
+    "device": "gpu",
+    "seed": 0,
+    "batch_size": 1,
+    "max_steps": 0,
+    "max_steps_per_sec": 0,
+    "log_every": 200,
+    "ckpt_every": 0,
+    "compile": true
+  },
+  "stream": {
+    "kind": "text",
+    "path": "~/.cache/awake/text/tinyshakespeare.txt",
+    "seq_len": 64,
+    "retention_bytes": 65536,
+    "on_end": "loop"
+  },
+  "learner": {
+    "kind": "chargru",
+    "hidden": 256,
+    "act": "tanh",
+    "embed": 64
+  },
+  "optim": {
+    "kind": "adam",
+    "lr": 0.002,
+    "momentum": 0.0,
+    "weight_decay": 0.0
+  },
+  "plasticity": {
+    "kind": "none",
+    "decay": 0.99,
+    "replacement_rate": 0.0001,
+    "maturity": 100,
+    "adaptation": false,
+    "l2_lambda": 0.001,
+    "shrink": 0.999,
+    "perturb": 0.0001,
+    "every": 1000
+  },
+  "sleep": {
+    "wake_steps": 5000,
+    "replay": true,
+    "memory_size": 512,
+    "replay_steps": 200,
+    "slow_ema": 0.1,
+    "consolidate": 0.0
+  }
+}

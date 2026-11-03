@@ -1,0 +1,36 @@
+# Online Permuted MNIST: every task is a new random pixel permutation, each image seen once.
+# Continual backprop. Expect: per-task online accuracy holds where the baseline declines.
+# Needs data once: `awake data mnist`
+
+[run]
+device = "cpu"
+batch_size = 16
+log_every = 500
+max_steps = 0
+max_steps_per_sec = 0
+seed = 0
+
+[stream]
+kind = "pmnist"
+samples_per_task = 10000   # 625 updates per task at batch 16
+retention_samples = 2000   # task-0 test images re-checked at every sleep
+
+[learner]
+kind = "mlp"
+hidden = [256, 256]
+act = "relu"
+
+[optim]
+kind = "sgd"
+lr = 0.01
+
+[plasticity]
+kind = "cbp"
+decay = 0.99
+replacement_rate = 1e-4
+maturity = 100
+adaptation = false
+
+[sleep]
+wake_steps = 20000
+replay = false

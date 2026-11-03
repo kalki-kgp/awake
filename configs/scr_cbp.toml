@@ -1,0 +1,39 @@
+# Slowly-Changing Regression (Dohare et al., Nature 2024), with continual backprop.
+# The target function changes a little every `flip_every` examples ("one task").
+# Expect: online error stays flat where the baseline creeps up.
+
+[run]
+device = "cpu"          # measured on M1: tiny nets run ~8x faster on CPU than on Metal (kernel-launch bound)
+batch_size = 1          # true streaming: one example, one update
+log_every = 2000
+max_steps = 0           # 0 = run forever
+max_steps_per_sec = 0   # 0 = unthrottled; `awake daemon install` sets its own rate
+seed = 0
+
+[stream]
+kind = "scr"
+n_bits = 20
+n_flip = 15
+flip_every = 10000      # one input bit flips every 10k examples
+target_units = 100
+beta = 0.7
+
+[learner]
+kind = "mlp"
+hidden = [5]
+act = "tanh"
+
+[optim]
+kind = "sgd"
+lr = 0.01
+
+[plasticity]
+kind = "cbp"
+decay = 0.99             # running-average decay for unit utility
+replacement_rate = 1e-4  # fraction of mature units re-initialised per step
+maturity = 100           # a unit must be this many updates old before it can be replaced
+adaptation = false       # divide utility by incoming-weight magnitude (Nature-paper variant)
+
+[sleep]
+wake_steps = 100000     # every 100k steps: evaluate retention on the task-0 regime, checkpoint, rebuild report
+replay = false
